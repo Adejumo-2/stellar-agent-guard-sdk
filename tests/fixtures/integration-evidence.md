@@ -343,3 +343,28 @@ npm run test:smoke                       # 64 exports resolve via the ESM export
 
 **A maintainer with `.env.phase2` should run `npm run test:integration` against this branch before merge** and replace this addendum with the fresh run output.
 
+## Addendum — 2026-09-26 (PR #184: GuardBlockedError decision payload and differential fixture test table #63, #70)
+
+Recorded because this PR touches the enforcement path (`src/preflight.ts`) and CI's `enforcement-path evidence gate` therefore requires this file in the diff.
+
+**It is not accompanied by a fresh live-testnet run**: `.env.phase2` is absent from this checkout, so `npm run test:integration` cannot execute here. The on-chain enforcement behaviour is unchanged by this diff.
+
+### Summary of changes to the enforcement path
+
+- `src/preflight.ts`: Updated `assertAllowed()` in `PreFlightInterceptor` to pass the offending `call` and `rawEvent` (the contract's first diagnostic event) into `GuardBlockedError` when rejecting blocked invocations.
+- `src/reasons.ts`: Extended `GuardBlockedErrorOptions` and `GuardBlockedError` to carry `call?: ContractCall` and `rawEvent?: DiagnosticEvent`, along with a structured `toJSON()` serialization method for observability and logging.
+- `scripts/sync-contract-fixtures.ts` & `tests/fixtures/contract-fixtures.json`: Added differential fixture tables and synchronization tooling asserting parity between contract diagnostics and SDK preflight reasoning.
+
+### What did run locally (Node 24)
+
+```text
+npm run typecheck                        # clean
+npm run lint                             # clean
+npm test                                 # 215 unit tests passing, 0 fail
+npm run build                            # clean
+npm run test:smoke                       # 64 exports resolve via the ESM export map
+```
+
+**A maintainer with `.env.phase2` should run `npm run test:integration` against this branch before merge** and replace this addendum with the fresh run output if needed.
+
+
