@@ -44,9 +44,11 @@ import {
   runBatchDecisionHook,
   runBlockedHook,
   runDecisionHook,
+  runMappingErrorHook,
   type BlockedHookLogger,
   type GuardBatchDecisionHook,
   type GuardBlockedHook,
+  type GuardMappingErrorHook,
 } from "./shared.ts";
 
 /** The one field of a tool call this adapter reads. */
@@ -108,6 +110,19 @@ export interface McpGuardOptions {
    */
   onBlocked?: GuardBlockedHook;
   /**
+   * Integration-bug alerting (issue #453): called once when
+   * `toContractCall`/`toContractCalls` throws or returns a malformed call,
+   * immediately before the fail-closed `isError` result. A guard refusal never
+   * fires it. `onBlocked` still fires for compatibility. Raw tool arguments are
+   * omitted unless `includeMappingErrorRequest` is set.
+   */
+  onMappingError?: GuardMappingErrorHook;
+  /**
+   * Include the raw `{ name, arguments }` request on `onMappingError` payloads.
+   * Off by default: MCP tool arguments commonly carry credentials or user data.
+   */
+  includeMappingErrorRequest?: boolean;
+  /**
    * Explicit sink for a swallowed `onBlocked` failure. Omitted (the default),
    * a throwing hook is silent (issue #314).
    */
@@ -152,7 +167,13 @@ async function guardMcpRequest<T extends McpToolResult>(
   } catch (error) {
     // Fail closed on a mapper failure (issue #316): the tool body never runs and
     // the halt is reported as undetermined, without a mapped `call`.
-    const failure = mappingFailureFor("mcp", error);
+    const failure = mappingFailureFor(
+      "mcp",
+      error,
+      request.name,
+      options.includeMappingErrorRequest ? request : undefined,
+    );
+    runMappingErrorHook(options.onMappingError, failure.mapping, options.blockedHookLogger);
     runBlockedHook(options.onBlocked, failure.info, options.blockedHookLogger);
     return {
       content: [{ type: "text", text: describeMcpRefusal(failure.decision, request.name) }],
