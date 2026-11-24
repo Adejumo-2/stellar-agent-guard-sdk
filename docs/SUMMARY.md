@@ -28,6 +28,7 @@
 * [Mutation Testing](mutation-testing.md)
 * [Enforcement Scope](enforcement-scope.md)
 * [Security Posture: Dependencies](security-posture.md)
+* [Error Catalog](errors.md)
 * [Troubleshooting](troubleshooting.md)
 * [Threat Model](threat-model.md)
 * [Attack-Surface Inventory](attack-surface.md)
