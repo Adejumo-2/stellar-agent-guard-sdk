@@ -259,10 +259,12 @@ export {
 
 export type {
   CostDecision,
+  CostDecisionProvenance,
   CostPreCheckConfig,
   CostPreCheckOptions,
   CostPreCheckResult,
   CostProvenance,
+  CostTransactionCheckOptions,
   CostWithDecision,
   FeeBreakdown,
   FeePercentile,
@@ -272,6 +274,7 @@ export type {
   HeadroomWarning,
   PolicyContext,
   ResourceBreakdown,
+  TransactionCostProvenance,
   WindowSpendSnapshot,
 } from "./cost.ts";
 
