@@ -246,6 +246,7 @@ export type {
 
 export {
   CostPreChecker,
+  FEE_PERCENTILES,
   STROOPS_PER_XLM,
   describeCostDecision,
   exceedsCeiling,
@@ -258,14 +259,22 @@ export {
 
 export type {
   CostDecision,
+  CostDecisionProvenance,
   CostPreCheckConfig,
   CostPreCheckOptions,
   CostPreCheckResult,
   CostProvenance,
+  CostTransactionCheckOptions,
   CostWithDecision,
   FeeBreakdown,
+  FeePercentile,
+  FeeSource,
+  FeeStatsProvider,
+  FeeStatsResponse,
+  HeadroomWarning,
   PolicyContext,
   ResourceBreakdown,
+  TransactionCostProvenance,
   WindowSpendSnapshot,
 } from "./cost.ts";
 
