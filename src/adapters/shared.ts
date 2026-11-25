@@ -106,6 +106,27 @@ export interface GuardBlockedInfo {
 export type GuardBlockedHook = (info: GuardBlockedInfo) => void;
 
 /**
+ * Summary of a batch pre-flight check handed to `onBatchDecision` (issue #498).
+ */
+export interface GuardBatchDecisionInfo {
+  /** The adapter that executed the batch check. */
+  adapter: GuardAdapterName;
+  /** Overall batch outcome: "admissible" if all calls passed, otherwise the first refusal kind. */
+  kind: "admissible" | "blocked" | "undetermined";
+  /** Per-call verdicts in the order the adapter checked them. */
+  verdicts: readonly PreFlightDecision[];
+  /** Every contract call in the checked batch, in order. */
+  calls: readonly ContractCall[];
+  /** Optional correlation identifier (e.g. toolCall id). */
+  correlationId?: string | undefined;
+}
+
+/**
+ * Action-level batch decision hook. Called once after checking an entire batch of calls.
+ */
+export type GuardBatchDecisionHook = (info: GuardBatchDecisionInfo) => void;
+
+/**
  * The structured payload handed to `onMappingError` (issue #453).
  *
  * A mapping failure means the integration's own `toContractCall`/

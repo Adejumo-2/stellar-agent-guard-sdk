@@ -47,6 +47,7 @@ import {
   runDecisionHook,
   runMappingErrorHook,
   type BlockedHookLogger,
+  type GuardBatchDecisionHook,
   type GuardMappingErrorHook,
 } from "./shared.ts";
 
@@ -92,6 +93,13 @@ export interface VercelAIGuardOptions {
    * `onStep`/`onUnknownTopics`).
    */
   onDecision?: (call: VercelAIToolCallInput, decision: PreFlightDecision) => void;
+  /**
+   * Action-level batch decision summary hook (issue #498).
+   *
+   * Called once per batch check with `{ adapter: "vercelai", kind, verdicts, calls, correlationId? }`
+   * after all calls have been checked, before `execute` runs or the error is thrown.
+   */
+  onBatchDecision?: GuardBatchDecisionHook | undefined;
   /**
    * Integration-bug alerting (issue #453): called once when
    * `toContractCall`/`toContractCalls` throws or returns a malformed call,

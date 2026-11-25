@@ -64,6 +64,7 @@ import {
   mapContractCalls,
   mappingFailureFor,
   mergeAbortSignals,
+  runBatchDecisionHook,
   runBlockedHook,
   runDecisionHook,
   runMappingErrorHook,
@@ -213,6 +214,8 @@ export function createLangChainGuardMiddleware(options: LangChainGuardOptions) {
   if (nameIssue) issues.push(nameIssue);
   const onDecisionIssue = validateOptionalFunction("onDecision", options.onDecision);
   if (onDecisionIssue) issues.push(onDecisionIssue);
+  const onBatchDecisionIssue = validateOptionalFunction("onBatchDecision", options.onBatchDecision);
+  if (onBatchDecisionIssue) issues.push(onBatchDecisionIssue);
   const onMappingErrorIssue = validateOptionalFunction("onMappingError", options.onMappingError);
   if (onMappingErrorIssue) issues.push(onMappingErrorIssue);
   const onStepIssue = validateOptionalFunction("onStep", options.onStep);
